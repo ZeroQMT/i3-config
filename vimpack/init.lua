@@ -20,7 +20,7 @@ vim.opt.smartcase      = true
 vim.opt.hlsearch       = true
 vim.opt.incsearch      = true
 
-vim.opt.signcolumn     = "no"
+vim.opt.signcolumn     = "yes"
 vim.opt.colorcolumn    = "98"  -- black's default line length
 vim.opt.showmode       = true
 vim.opt.pumheight      = 10
@@ -68,14 +68,14 @@ vim.keymap.set("v", ">", ">gv")
 -- Move lines
 vim.keymap.set("n", "<A-j>", ":m .+1<CR>==")
 vim.keymap.set("n", "<A-k>", ":m .-2<CR>==")
-vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv")
+vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv")
 
 -- Diagnostics
 vim.keymap.set("n", "<leader>d",  function() vim.diagnostic.open_float({ scope = "line" }) end, { desc = "Line diagnostics" })
 vim.keymap.set("n", "<leader>nd", function() vim.diagnostic.jump({ count = 1 }) end,            { desc = "Next diagnostic" })
 vim.keymap.set("n", "<leader>pd", function() vim.diagnostic.jump({ count = -1 }) end,           { desc = "Prev diagnostic" })
-
+vim.keymap.set("n", "<leader>rm", "<cmd>RenderMarkdown toggle<CR>", { desc = "Toggle markdown render" })
 -- ============================================================================
 -- AUTOCMDS
 -- ============================================================================
@@ -83,7 +83,7 @@ local augroup = vim.api.nvim_create_augroup("UserConfig", { clear = true })
 
 vim.api.nvim_create_autocmd("BufWritePre", {
   group   = augroup,
-  pattern = { "*.py", "*.sh", "*.bash" },
+  pattern = { "*.py", "*.sh", "*.bash", "*.lua", "*.c", "*.md" },
   callback = function(args)
     if vim.bo[args.buf].buftype ~= "" then return end
     if not vim.bo[args.buf].modifiable then return end
@@ -119,7 +119,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 
 vim.api.nvim_create_autocmd("FileType", {
   group    = augroup,
-  pattern  = { "markdown", "text", "gitcommit", "python" },
+  pattern  = { "markdown", "text", "gitcommit", "python", "lua", "c" },
   callback = function()
     vim.opt_local.wrap      = true
     vim.opt_local.linebreak = true
@@ -142,15 +142,54 @@ vim.pack.add({
   { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") },
   "https://github.com/L3MON4D3/LuaSnip",
   "https://github.com/folke/tokyonight.nvim",
-  "https://github.com/goolord/alpha-nvim"
-})
+  "https://github.com/goolord/alpha-nvim",
+  "https://github.com/norcalli/nvim-colorizer.lua",
+  "https://github.com/MeanderingProgrammer/render-markdown.nvim",
+  "https://github.com/stevearc/oil.nvim",
+  "https://github.com/MunifTanjim/nui.nvim",
+  "https://github.com/rcarriga/nvim-notify",
+  "https://github.com/folke/noice.nvim",
+  })
 
+-- ============================================================================
+-- MARKDOWN PREVIEW
+-- ============================================================================
+require("render-markdown").setup({
+  file_types = { "markdown" },
+  render_modes = { "n", "c" },
+ heading = {
+  sign        = false,
+  icons       = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
+  backgrounds = { "NONE", "NONE", "NONE", "NONE", "NONE", "NONE" },
+  foregrounds = { "NONE", "NONE", "NONE", "NONE", "NONE", "NONE" },
+},
+code = {
+    sign        = false,
+    width       = "block",
+    border      = "thin",
+  },
+  checkbox = {
+    unchecked = { icon = "󰄱 " },
+    checked   = { icon = "󰱒 " },
+  },
+  link = { enable = false }
+})
 -- ============================================================================
 -- TREESITTER
 -- ============================================================================
 require("nvim-treesitter").setup({})
-
-vim.cmd.colorscheme("tokyonight")
+require("colorizer").setup()
+require("noice").setup({
+  cmdline = {
+    view = "cmdline_popup",
+    opts = {
+      position = {
+        row = 3,
+        col = "50%",
+      },
+    },
+  },
+})vim.cmd.colorscheme("tokyonight")
 
 -- Transparent background
 for _, g in ipairs({ "Normal", "NormalNC", "EndOfBuffer", "NormalFloat", "FloatBorder",
@@ -159,7 +198,7 @@ for _, g in ipairs({ "Normal", "NormalNC", "EndOfBuffer", "NormalFloat", "FloatB
 end
 
 
-local ts_parsers = { "python", "bash", "vim", "vimdoc", "markdown", "json", "yaml" }
+local ts_parsers = { "python", "bash", "vim", "vimdoc", "markdown", "json", "yaml", "c" }
 local installed  = require("nvim-treesitter.config").get_installed()
 local to_install = vim.tbl_filter(function(p) return not vim.tbl_contains(installed, p) end, ts_parsers)
 if #to_install > 0 then require("nvim-treesitter").install(to_install) end
@@ -185,8 +224,9 @@ require("nvim-tree").setup({
 vim.api.nvim_set_hl(0, "NvimTreeNormal",       { bg = "none" })
 vim.api.nvim_set_hl(0, "NvimTreeNormalNC",      { bg = "none" })
 vim.api.nvim_set_hl(0, "NvimTreeWinSeparator",  { fg = "#2a2a2a", bg = "none" })
-vim.keymap.set("n", "<leader>e", function() require("nvim-tree.api").tree.toggle() end, { desc = "Toggle file tree" })
-
+-- vim.keymap.set("n", "<leader>e", function() require("nvim-tree.api").tree.toggle() end, { desc = "Toggle file tree" })
+require("oil").setup()
+vim.keymap.set("n", "<leader>e", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 -- ============================================================================
 -- FZF
 -- ============================================================================
@@ -278,19 +318,40 @@ vim.lsp.config["*"] = {
 
 vim.lsp.config("pyright", {})
 vim.lsp.config("bashls",  {})
+vim.lsp.config("clangd",  {})
+
+-- vim.lsp.config("efm", {
+--   filetypes        = { "python", "sh" },
+--   init_options     = { documentFormatting = true },
+--   settings         = {
+--     languages = {
+--       python = { require("efmls-configs.linters.flake8"), require("efmls-configs.formatters.black") },
+--       sh     = { require("efmls-configs.linters.shellcheck"), require("efmls-configs.formatters.shfmt") },
+--       lua    = { require("efmls-configs.formatters.stylua") },
+--     },
+--   },
+-- })
 
 vim.lsp.config("efm", {
-  filetypes        = { "python", "sh" },
-  init_options     = { documentFormatting = true },
-  settings         = {
+  filetypes    = { "python", "sh", "lua", "c" },
+  init_options = { documentFormatting = true },
+  settings     = {
+    rootMarkers = { ".git/" },
     languages = {
       python = { require("efmls-configs.linters.flake8"), require("efmls-configs.formatters.black") },
       sh     = { require("efmls-configs.linters.shellcheck"), require("efmls-configs.formatters.shfmt") },
+      --lua    = { require("efmls-configs.formatters.stylua") },
+      lua = {
+  {
+    formatCommand  = "stylua --stdin-filepath ${INPUT} -",
+    formatStdin    = true,
+  }
+},
     },
   },
 })
 
-vim.lsp.enable({ "pyright", "bashls", "efm" })
+vim.lsp.enable({ "pyright", "bashls", "efm", "clangd" })
 
 vim.api.nvim_create_autocmd("LspAttach", {
   group    = augroup,
