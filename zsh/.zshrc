@@ -1,13 +1,13 @@
 # zoomer shell config
 
 autoload -Uz colors && colors # load colors
-#PROMPT="%F{green}%n@%m %F{blue}%~ %F{magenta}$ %f" 
-#PROMPT="%F%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
+#PROMPT="%F{green}%n@%m %F{blue}%~ %F{magenta}$ %f"
+PROMPT="%F%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
 #PROMPT="%F%{$fg[cyan]%}[%{$fg[white]%}%n%{$fg[white]%}@%{$fg[cyan]%}%M %{$fg[white]%}%~%{$fg[cyan]%}]%{$reset_color%}$%b "
 #PROMPT='%F{magenta}%n@%m%f %F{red}%~%f $ '
 #PROMPT='%F{magenta}%~%f $ '
 #PROMPT='%F{blue}%n%f@%F{magenta}%m%f %F{white}[%F{cyan}%~%F{white}]%f ❯ '
-PROMPT='%F{cyan}%~%f %F{green}❯%f '
+#PROMPT='%F{cyan}%~%f %F{green}❯%f '
 
 stty -ixon # disable C-s and C-q
 
@@ -24,10 +24,18 @@ alias cl='clear'
 alias toc='touch'
 alias py='python3'
 alias serve='python -m http.server'
+alias ktm='tmux kill-server'
 
-se(){
-	choice=$(find "$HOME/scripts" -type f | fzf --preview "bat -l sh {}")
-	[ -z "$choice" ] || nvim "$choice"
+se() {
+    choice=$(find "$HOME" -type f 2>/dev/null | fzf \
+        --preview "bat --color=always --style=numbers --line-range=:500 {}" \
+        --preview-window=right:60%:wrap \
+        --height=90% \
+        --border=rounded \
+        --prompt="Files> " \
+        --pointer="▶" \
+        --bind "ctrl-d:preview-page-down,ctrl-u:preview-page-up")
+    [ -z "$choice" ] || nvim "$choice"
 }
 
 # basic bindings
@@ -49,7 +57,7 @@ se(){
 bindkey '^R' history-incremental-search-backward # Ctrl+R
 #bindkey '^T' transpose-chars      # Ctrl+T
 
-# source other programs 
+# source other programs
 # source ~/.config/shell/aliasrc
 # source ~/.config/shell/bin/startup
 # source ~/.config/shell/bin/archive-helper
@@ -60,9 +68,9 @@ eval "$(fzf --zsh)"
 ZDOTDIR=${ZDOTDIR:-$HOME}
 # zsh smart completion
 autoload -Uz compinit
-zstyle ':completion:*' menu select        
-zstyle ':completion:*' matcher-list 'r:|=*' 'l:|=*' 'm:{a-z}={A-Za-z}'  
-zstyle ':completion:*' rehash true        
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'r:|=*' 'l:|=*' 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' rehash true
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path "$ZDOTDIR/.zcompcache"
 compinit -d "$ZDOTDIR/.zcompdump"
