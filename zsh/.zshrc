@@ -25,6 +25,12 @@ alias toc='touch'
 alias py='python3'
 alias serve='python -m http.server'
 alias ktm='tmux kill-server'
+alias g='git init'
+alias ga='git add .'
+alias gcm='git commit -m'
+alias gmain='git branch -M main'
+alias gpush='git push -u origin main'
+alias src='source'
 
 se() {
     choice=$(find "$HOME" -type f 2>/dev/null | fzf \
