@@ -1,35 +1,21 @@
-# font-family = "Terminess Nerd Font"
-# font-size = 20
-#
+#font-family = "Terminess Nerd Font "
+#font-family = "Inconsolata"
+font-family = "BlexMono Nerd Font Mono"
 background = "#11111B"
-background-opacity = 0.95
-#
-
-#foreground = "#CDD6F4"
-#
-cursor-opacity = 1
-# adjust-cursor-thickness = 2
-#
+background-opacity = 0.98
+foreground = "#CDD6F4"
+adjust-cursor-thickness = 2
 window-decoration = false
 gtk-titlebar = false
-#
 font-style = Regular
 font-style-bold = Bold
 font-style-italic = Regular
 font-style-bold-italic = Bold
-
-font-family = "Inconsolata"
+font-synthetic-style = false
 theme = "Kanagawa Wave"
-#background-opacity = 1
-#background-blur = true
-font-size = 18
-
-
+font-size = 16
 mouse-hide-while-typing = true
-
 macos-titlebar-proxy-icon = hidden
 title = " "
-
 custom-shader = ~/.config/ghostty/shaders/cursor.glsl
-
 clipboard-write = allow
