@@ -1,14 +1,35 @@
 # zoomer shell config
 
-autoload -Uz colors && colors # load colors
+#autoload -Uz colors && colors # load colors
 #PROMPT="%F{green}%n@%m %F{blue}%~ %F{magenta}$ %f"
-PROMPT="%F%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
+#PROMPT="%F%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
 #PROMPT="%F%{$fg[cyan]%}[%{$fg[white]%}%n%{$fg[white]%}@%{$fg[cyan]%}%M %{$fg[white]%}%~%{$fg[cyan]%}]%{$reset_color%}$%b "
 #PROMPT='%F{magenta}%n@%m%f %F{red}%~%f $ '
 #PROMPT='%F{magenta}%~%f $ '
 #PROMPT='%F{blue}%n%f@%F{magenta}%m%f %F{white}[%F{cyan}%~%F{white}]%f ❯ '
-#PROMPT='%F{cyan}%~%f %F{green}❯%f '
+#PROMPT='%F{cyan}% %F{green}❯%f '
+autoload -U colors && colors
+autoload -Uz vcs_info
 
+setopt PROMPT_SUBST
+
+precmd() { vcs_info }
+
+zstyle ':vcs_info:git:*' formats ' %b'
+
+BG1="#2E3440"
+BG2="#3B4252"
+BG3="#4C566A"
+
+FG1="#E5E9F0"
+FG2="#ECEFF4"
+
+PROMPT="%F{$FG1}
+%K{$BG1} %D{%I:%M%p} %k\
+%K{$BG2}%F{$FG2} %n %k\
+%K{$BG3}%F{$FG2} %~ ${vcs_info_msg_0_} %k%f
+
+❯ "
 stty -ixon # disable C-s and C-q
 
 setopt autocd # any directory typed is automatically cd-ed into.
@@ -26,11 +47,12 @@ alias py='python3'
 alias serve='python -m http.server'
 alias ktm='tmux kill-server'
 alias g='git init'
-alias ga='git add .'
 alias gcm='git commit -m'
+alias gadd='git add .'
 alias gmain='git branch -M main'
 alias gpush='git push -u origin main'
 alias src='source'
+alias chill='rmpc'
 
 se() {
     choice=$(find "$HOME" -type f 2>/dev/null | fzf \
