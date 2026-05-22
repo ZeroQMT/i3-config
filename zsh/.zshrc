@@ -8,14 +8,15 @@
 #PROMPT='%F{magenta}%~%f $ '
 #PROMPT='%F{blue}%n%f@%F{magenta}%m%f %F{white}[%F{cyan}%~%F{white}]%f ❯ '
 #PROMPT='%F{cyan}% %F{green}❯%f '
+
+
+
 autoload -U colors && colors
 autoload -Uz vcs_info
-
-setopt PROMPT_SUBST
-
-precmd() { vcs_info }
-
+zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:git:*' formats ' %b'
+setopt PROMPT_SUBST
+precmd() { vcs_info }
 
 BG1="#2E3440"
 BG2="#3B4252"
@@ -24,21 +25,19 @@ BG3="#4C566A"
 FG1="#E5E9F0"
 FG2="#ECEFF4"
 
+# after — single quotes for the vcs part, keep double for color vars
 PROMPT="%F{$FG1}
 %K{$BG1} %D{%I:%M%p} %k\
 %K{$BG2}%F{$FG2} %n %k\
-%K{$BG3}%F{$FG2} %~ ${vcs_info_msg_0_} %k%f
-
-❯ "
+%K{$BG3}%F{$FG2} %~ "'${vcs_info_msg_0_}'" %k%f ❯ "
 stty -ixon # disable C-s and C-q
 
 setopt autocd # any directory typed is automatically cd-ed into.
 setopt interactive_comments # i can do stuff like THIS
 
-alias ls='ls --color=auto'
-alias ll='exa -l' || ls -l
+alias ls="eza --no-filesize --long --color=always --icons=always --no-user"
+alias ll= 'ls -l'
 alias vim='nvim'
-alias nvim='nvim'
 alias bat='bat --theme="Solarized (dark)"'
 alias tmux='tmux -u'
 alias cl='clear'
@@ -52,7 +51,10 @@ alias gadd='git add .'
 alias gmain='git branch -M main'
 alias gpush='git push -u origin main'
 alias src='source'
+alias zsh='source ~/.zshrc'
 alias chill='rmpc'
+alias tree="tree -L 3 -a -I '.git' --charset X "
+alias dtree="tree -L 3 -a -d -I '.git' --charset X "
 
 se() {
     choice=$(find "$HOME" -type f 2>/dev/null | fzf \
@@ -93,6 +95,8 @@ bindkey '^R' history-incremental-search-backward # Ctrl+R
 eval "$(zoxide init zsh)"
 eval "$(fzf --zsh)"
 
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#4C566A'   # Nord-ish gray, fits your theme
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)   # try history first, then completion
 ZDOTDIR=${ZDOTDIR:-$HOME}
 # zsh smart completion
 autoload -Uz compinit
@@ -103,6 +107,6 @@ zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path "$ZDOTDIR/.zcompcache"
 compinit -d "$ZDOTDIR/.zcompdump"
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
+source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 # Created by `pipx` on 2026-05-09 14:32:03
 export PATH="$PATH:/home/qmt/.local/bin"
