@@ -4,7 +4,11 @@
 # Should you change your keyboard layout some time, delete
 # this file and re-run i3-config-wizard(1).
 #
-
+set_from_resource $bg       i3wm.background #1e1e2e
+set_from_resource $fg       i3wm.foreground #cdd6f4
+set_from_resource $accent   i3wm.color4     #89b4fa
+set_from_resource $red      i3wm.color1     #f38ba8
+set_from_resource $yellow   i3wm.color3     #f9e2af
 # i3 config file (v4)
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
@@ -50,25 +54,25 @@ floating_modifier $mod
 tiling_drag modifier titlebar
 
 # start a terminal
-bindsym $mod+Return exec ghostty
-bindsym $mod+Shift+Return exec st
+bindsym $mod+Return exec st
+bindsym $mod+Shift+Return exec ghostty
 # kill focused window
 bindsym $mod+q kill
-
+bindsym $mod+b exec firefox
 # Color variables based on Miniblack palette
-set $bg           #000000
-set $bg_alt       #0a0a0a
-set $fg           #d8d3e0
-set $fg_alt       #b5adc4
-set $fg_dim       #6e6a86
-set $accent       #6e6a86
-set $accent_alt   #9ccfd8
-set $red          #ef6b73
-set $orange       #f29e74
-set $yellow       #f7c07f
-set $green        #a3be8c
-set $cyan         #86aaec
-set $blue         #7aa2f7
+# set $bg           #000000
+# set $bg_alt       #0a0a0a
+# set $fg           #d8d3e0
+# set $fg_alt       #b5adc4
+# set $fg_dim       #6e6a86
+# set $accent       #6e6a86
+# set $accent_alt   #9ccfd8
+# set $red          #ef6b73
+# set $orange       #f29e74
+# set $yellow       #f7c07f
+# set $green        #a3be8c
+# set $cyan         #86aaec
+# set $blue         #7aa2f7
 
 # start dmenu (a program launcher)
 #bindsym $mod+d exec --no-startup-id dmenu_run
@@ -239,47 +243,34 @@ bar {
 		-p time.format="%H:%M" \
 		-t iceberg
 		position top
-# colors {
-#         background $bg
-#         statusline $fg
-#         separator  $fg_dim
-#
-#         #                  border   background text
-#         focused_workspace  $accent  $accent    $bg
-#         active_workspace   $bg_alt  $bg_alt    $fg
-#         inactive_workspace $bg      $bg        $fg_dim
-#         urgent_workspace   $red     $red       $fg
-#         binding_mode       $yellow  $yellow    $bg
-#     }
-
     colors {
-    background #282A36
-    statusline #F8F8F2
-    separator  #44475A
+        background $bg
+        statusline $fg
+        separator  $accent
 
-    focused_workspace  #44475A #44475A #F8F8F2
-    active_workspace   #282A36 #44475A #F8F8F2
-    inactive_workspace #282A36 #282A36 #BFBFBF
-    urgent_workspace   #FF5555 #FF5555 #F8F8F2
-    binding_mode       #FF5555 #FF5555 #F8F8F2
-  }
+        focused_workspace  $accent $accent $bg
+        active_workspace   $bg     $bg     $fg
+        inactive_workspace $bg     $bg     $fg
+        urgent_workspace   $red    $red    $fg
+        binding_mode       $yellow $yellow $bg
+    }
 }
 
 # Window colors
 #                       border     background text       indicator  child_border
-# client.focused          $accent    $accent    $bg        $cyan      $accent
-# client.focused_inactive $bg_alt    $bg_alt    $fg_alt    $bg_alt    $bg_alt
-# client.unfocused        $bg        $bg        $fg_dim    $bg        $bg
-# client.urgent           $red       $red       $fg        $red       $red
-# client.placeholder      $bg        $bg        $fg_alt    $bg        $bg
-# client.background       $bg
+client.focused          $accent    $accent    $bg        $cyan      $accent
+client.focused_inactive $bg_alt    $bg_alt    $fg_alt    $bg_alt    $bg_alt
+client.unfocused        $bg        $bg        $fg_dim    $bg        $bg
+client.urgent           $red       $red       $fg        $red       $red
+client.placeholder      $bg        $bg        $fg_alt    $bg        $bg
+client.background       $bg
 
-client.focused          #FF5555 #6272A4 #F8F8F2 #6272A4   #6272A4
-client.focused_inactive #FF5555 #44475A #F8F8F2 #44475A   #44475A
-client.unfocused        #282A36 #282A36 #BFBFBF #282A36   #282A36
-client.urgent           #FF5555 #FF5555 #F8F8F2 #FF5555   #FF5555
-client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
-client.background       #F8F8F2
+# client.focused          #FF5555 #6272A4 #F8F8F2 #6272A4   #6272A4
+# client.focused_inactive #FF5555 #44475A #F8F8F2 #44475A   #44475A
+# client.unfocused        #282A36 #282A36 #BFBFBF #282A36   #282A36
+# client.urgent           #FF5555 #FF5555 #F8F8F2 #FF5555   #FF5555
+# client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
+# client.background       #F8F8F2
 #set_from_resource $fg i3wm.color7 #f0f0f0
 #set_from_resource $bg i3wm.color0 #f0f0f0
 
@@ -291,9 +282,9 @@ default_floating_border pixel 0
 for_window [class="firefox"] border pixel 0
 for_window [class="ghostty"] border pixel 0
 for_window [class="st"] border pixel 0
-#exec_always picom --config ~/.config/picom.conf
+exec_always picom --config ~/.config/picom.conf
 exec_always --no-startup-id feh --bg-fill $HOME/Wall/core/anime_girl_on_blue_background.png
 exec --no-startup-id fcitx5 -d
-#exec_always wal -R &
+exec_always wal -R &
 exec --no-startup-id lookapp
 for_window [class="lookapp"] floating enable, border none

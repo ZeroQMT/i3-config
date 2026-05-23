@@ -35,6 +35,7 @@ setopt interactive_comments # i can do stuff like THIS
 
 alias ls="eza --no-filesize --long --color=always --icons=always --no-user"
 alias ll= 'ls -l'
+alias la='ls -lah --color=auto --group-directories-first'
 alias vim='nvim'
 alias bat='bat --theme="Solarized (dark)"'
 alias tmux='tmux -u'
@@ -53,6 +54,13 @@ alias zsh='source ~/.zshrc'
 alias chill='rmpc'
 alias tree="tree -L 3 -a -I '.git' --charset X "
 alias dtree="tree -L 3 -a -d -I '.git' --charset X "
+alias cat='bat'
+alias shell='exec $SHELL -l'
+alias theme1="wal --theme $(echo ~/.config/wal/colorschemes/dark/dim.json) -n && i3-msg reload"
+alias theme2="wal --theme $(echo ~/.config/wal/colorschemes/dark/flare.json) -n && i3-msg reload"
+alias theme3="wal --theme $(echo ~/.config/wal/colorschemes/dark/nordic) -n && i3-msg reload"
+alias theme4="wal --theme $(echo ~/.config/wal/colorschemes/dark/echo.json) -n"
+alias theme5="wal --theme $(echo ~/.config/wal/colorschemes/dark/herons) -n"
 
 se() {
     choice=$(find "$HOME" -type f 2>/dev/null | fzf \
@@ -61,10 +69,11 @@ se() {
         --height=90% \
         --border=rounded \
         --prompt="Files> " \
-        --pointer="▶" \
+        --pointer="▶ " \
         --bind "ctrl-d:preview-page-down,ctrl-u:preview-page-up")
     [ -z "$choice" ] || nvim "$choice"
 }
+
 
 # basic bindings
 # bindkey -v # press ESC and see what happens
