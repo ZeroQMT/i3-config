@@ -18,16 +18,14 @@ zstyle ':vcs_info:git:*' formats ' %b'
 setopt PROMPT_SUBST
 precmd() { vcs_info }
 
-BG1="#2E3440"
-BG2="#3B4252"
-BG3="#4C566A"
+BG2="#6e6a76"
+BG3="#2a2837"
 
 FG1="#E5E9F0"
 FG2="#ECEFF4"
 
 # after — single quotes for the vcs part, keep double for color vars
 PROMPT="%F{$FG1}
-%K{$BG1} %D{%I:%M%p} %k\
 %K{$BG2}%F{$FG2} %n %k\
 %K{$BG3}%F{$FG2} %~ "'${vcs_info_msg_0_}'" %k%f ❯ "
 stty -ixon # disable C-s and C-q
@@ -110,3 +108,5 @@ source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 # Created by `pipx` on 2026-05-09 14:32:03
 export PATH="$PATH:/home/qmt/.local/bin"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/Scripts:$PATH"

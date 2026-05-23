@@ -8,12 +8,13 @@
 # i3 config file (v4)
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
-
+gaps inner 10
+gaps outer 10
 set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:Terminus 10
+font pango:Terminus 12
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
@@ -50,7 +51,7 @@ tiling_drag modifier titlebar
 
 # start a terminal
 bindsym $mod+Return exec ghostty
-
+bindsym $mod+Shift+Return exec st
 # kill focused window
 bindsym $mod+q kill
 
@@ -102,6 +103,9 @@ bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
+
+# set random wallpaer
+bindsym $mod+Shift+w exec --no-startup-id ~/Scripts/random_wallpaper.sh
 
 # split in horizontal orientation
 bindsym $mod+h split h
@@ -234,7 +238,7 @@ bar {
 		pasink pasource \
 		-p time.format="%H:%M" \
 		-t iceberg
-		position bottom
+		position top
 # colors {
 #         background $bg
 #         statusline $fg
@@ -248,7 +252,7 @@ bar {
 #         binding_mode       $yellow  $yellow    $bg
 #     }
 
-colors {
+    colors {
     background #282A36
     statusline #F8F8F2
     separator  #44475A
@@ -259,7 +263,6 @@ colors {
     urgent_workspace   #FF5555 #FF5555 #F8F8F2
     binding_mode       #FF5555 #FF5555 #F8F8F2
   }
-
 }
 
 # Window colors
@@ -271,17 +274,26 @@ colors {
 # client.placeholder      $bg        $bg        $fg_alt    $bg        $bg
 # client.background       $bg
 
-client.focused          #6272A4 #6272A4 #F8F8F2 #6272A4   #6272A4
-client.focused_inactive #44475A #44475A #F8F8F2 #44475A   #44475A
+client.focused          #FF5555 #6272A4 #F8F8F2 #6272A4   #6272A4
+client.focused_inactive #FF5555 #44475A #F8F8F2 #44475A   #44475A
 client.unfocused        #282A36 #282A36 #BFBFBF #282A36   #282A36
-client.urgent           #44475A #FF5555 #F8F8F2 #FF5555   #FF5555
+client.urgent           #FF5555 #FF5555 #F8F8F2 #FF5555   #FF5555
 client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
 client.background       #F8F8F2
+#set_from_resource $fg i3wm.color7 #f0f0f0
+#set_from_resource $bg i3wm.color0 #f0f0f0
+
+# client.focused          $bg $bg $fg $bg $bg
+# client.unfocused        $bg $bg $fg $bg $bg
 
 default_border pixel 0
 default_floating_border pixel 0
-for_window [class="firefox"] border pixel 2
-for_window [class="ghostty"] border pixel 2
-exec_always picom --config ~/.config/picom.conf
-exec_always --no-startup-id feh --bg-fill $HOME/Wall/wallhaven-zywe5j.jpg
+for_window [class="firefox"] border pixel 0
+for_window [class="ghostty"] border pixel 0
+for_window [class="st"] border pixel 0
+#exec_always picom --config ~/.config/picom.conf
+exec_always --no-startup-id feh --bg-fill $HOME/Wall/core/anime_girl_on_blue_background.png
 exec --no-startup-id fcitx5 -d
+#exec_always wal -R &
+exec --no-startup-id lookapp
+for_window [class="lookapp"] floating enable, border none
