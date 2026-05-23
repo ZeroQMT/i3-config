@@ -5,7 +5,11 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "BlexMono Nerd Font:pixelsize=22:antialias=true:autohint=true";
+static char *font = "BlexMono Nerd Font:pixelsize=22:antialias=true:autohint=true:style=Regular";
+static char *font2[] = {
+	/* Dùng Regular thay cho Italic và Bold Italic — không bao giờ render chữ nghiêng */
+	"BlexMono Nerd Font:pixelsize=22:antialias=true:autohint=true:style=Regular",
+};
 static int borderpx = 2;
 
 /*
@@ -184,6 +188,7 @@ static MouseShortcut mshortcuts[] = {
 	{ XK_NO_MOD,            Button4, kscrollup,      {.i = 1} },
 	{ XK_NO_MOD,            Button5, kscrolldown,    {.i = 1} },
 	{ XK_ANY_MOD,           Button2, selpaste,       {.i = 0},      1 },
+	{ XK_NO_MOD,            Button3, clippaste,      {.i = 0},      1 },
 	{ ShiftMask,            Button4, ttysend,        {.s = "\033[5;2~"} },
 	{ XK_ANY_MOD,           Button4, ttysend,        {.s = "\031"} },
 	{ ShiftMask,            Button5, ttysend,        {.s = "\033[6;2~"} },
@@ -203,8 +208,10 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,              XK_K,           zoom,           {.f = +1} },
 	{ TERMMOD,              XK_J,           zoom,           {.f = -1} },
 	{ TERMMOD,              XK_Home,        zoomreset,      {.f =  0} },
-	{ MODKEY,               XK_c,           clipcopy,       {.i =  0} },
-	{ MODKEY,               XK_v,           clippaste,      {.i =  0} },
+	{ ControlMask|ShiftMask,  XK_c,           clipcopy,       {.i =  0} },
+	{ ControlMask|ShiftMask,  XK_C,           clipcopy,       {.i =  0} },
+	{ ControlMask|ShiftMask,  XK_v,           clippaste,      {.i =  0} },
+	{ ControlMask|ShiftMask,  XK_V,           clippaste,      {.i =  0} },
 	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
 	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
 	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
@@ -246,7 +253,7 @@ static KeySym mappedkeys[] = { -1 };
  * State bits to ignore when matching key or button events.  By default,
  * numlock (Mod2Mask) and keyboard layout (XK_SWITCH_MOD) are ignored.
  */
-static uint ignoremod = Mod2Mask|XK_SWITCH_MOD;
+static uint ignoremod = Mod2Mask|XK_SWITCH_MOD|LockMask;
 
 /*
  * This is the huge key array which defines all compatibility to the Linux

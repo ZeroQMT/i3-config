@@ -616,6 +616,7 @@ selnotify(XEvent *e)
 void
 xclipcopy(void)
 {
+	/* Auto-copy selection into CLIPBOARD so it's available outside terminal */
 	clipcopy(NULL);
 }
 
@@ -686,6 +687,8 @@ selrequest(XEvent *e)
 void
 setsel(char *str, Time t)
 {
+	Atom clipboard;
+
 	if (!str)
 		return;
 
@@ -695,6 +698,12 @@ setsel(char *str, Time t)
 	XSetSelectionOwner(xw.dpy, XA_PRIMARY, xw.win, t);
 	if (XGetSelectionOwner(xw.dpy, XA_PRIMARY) != xw.win)
 		selclear();
+
+	/* Sync selection into CLIPBOARD so paste works everywhere */
+	free(xsel.clipboard);
+	xsel.clipboard = xstrdup(xsel.primary);
+	clipboard = XInternAtom(xw.dpy, "CLIPBOARD", 0);
+	XSetSelectionOwner(xw.dpy, clipboard, xw.win, t);
 }
 
 void
@@ -1049,7 +1058,7 @@ xloadfonts(const char *fontstr, double fontsize)
 	win.ch = ceilf(dc.font.height * chscale);
 
 	FcPatternDel(pattern, FC_SLANT);
-	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
+	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ROMAN); /* force upright — no italic */
 	if (xloadfont(&dc.ifont, pattern))
 		die("can't open font %s\n", fontstr);
 
@@ -1955,11 +1964,15 @@ kpress(XEvent *ev)
 	} else {
 		len = XLookupString(e, buf, sizeof buf, &ksym, NULL);
 	}
-	/* 1. shortcuts */
-	for (bp = shortcuts; bp < shortcuts + LEN(shortcuts); bp++) {
-		if (ksym == bp->keysym && match(bp->mod, e->state)) {
-			bp->func(&(bp->arg));
-			return;
+	/* 1. shortcuts — use raw keysym from keycode so IME can't swallow them */
+	{
+		KeySym rawsym = XLookupKeysym(e, 0);
+		for (bp = shortcuts; bp < shortcuts + LEN(shortcuts); bp++) {
+			if ((ksym == bp->keysym || rawsym == bp->keysym) &&
+			    match(bp->mod, e->state)) {
+				bp->func(&(bp->arg));
+				return;
+			}
 		}
 	}
 
